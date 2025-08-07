@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thi Thử Cho Bé</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: #fce4ec;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff3e0;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      color: #e91e63;
+      font-size: 32px;
+    }
+
+    input[type="text"] {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #ffb74d;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    button {
+      background-color: #ff7043;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #f4511e;
+    }
+
+    .question {
+      margin-bottom: 25px;
+      text-align: left;
+      font-size: 18px;
+    }
+
+    .question p {
+      font-weight: bold;
+      color: #4e342e;
+    }
+
+    label {
+      display: block;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .result {
+      font-size: 24px;
+      color: #2e7d32;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="infoSection">
+    <div class="emoji">🧠🎓</div>
+    <h1>Thi Thử Vui Vẻ!</h1>
+    <p>🧒 Họ tên:</p>
+    <input type="text" id="name" placeholder="Nhập tên bé..." />
+    <p>📚 Lớp học:</p>
+    <input type="text" id="class" placeholder="Lớp..." />
+    <p>📞 Số điện thoại:</p>
+    <input type="text" id="phone" placeholder="SĐT phụ huynh hoặc học sinh..." />
+    <button onclick="startQuiz()">👉 Bắt đầu thi</button>
+  </div>
+
+  <div class="container hidden" id="quizSection">
+    <div class="emoji">📝📚</div>
+    <h1>Bắt Đầu Làm Bài</h1>
+    <form id="quizForm">
+      <div class="question">
+        <p>1️⃣ Con vật nào kêu “meo meo”?</p>
+        <label><input type="radio" name="q1" value="a"> 🐶 Chó</label>
+        <label><input type="radio" name="q1" value="b"> 🐱 Mèo</label>
+        <label><input type="radio" name="q1" value="c"> 🐷 Heo</label>
+      </div>
+
+      <div class="question">
+        <p>2️⃣ 1 + 1 = ?</p>
+        <label><input type="radio" name="q2" value="a"> 1️⃣</label>
+        <label><input type="radio" name="q2" value="b"> 2️⃣</label>
+        <label><input type="radio" name="q2" value="c"> 3️⃣</label>
+      </div>
+
+      <div class="question">
+        <p>3️⃣ Màu của trái chuối là gì?</p>
+        <label><input type="radio" name="q3" value="a"> 🔵 Xanh dương</label>
+        <label><input type="radio" name="q3" value="b"> 🟡 Vàng</label>
+        <label><input type="radio" name="q3" value="c"> 🔴 Đỏ</label>
+      </div>
+
+      <button type="button" onclick="submitQuiz()">✅ Nộp bài</button>
+    </form>
+
+    <div class="result" id="resultSection"></div>
+  </div>
+
+  <script>
+    function startQuiz() {
+      const name = document.getElementById("name").value.trim();
+      const lop = document.getElementById("class").value.trim();
+
+      if (name === "" || lop === "") {
+        alert("Vui lòng nhập đầy đủ tên và lớp học!");
+        return;
+      }
+
+      document.getElementById("infoSection").classList.add("hidden");
+      document.getElementById("quizSection").classList.remove("hidden");
+    }
+
+    function submitQuiz() {
+      const answers = {
+        q1: "b",
+        q2: "b",
+        q3: "b"
+      };
+
+      let score = 0;
+      for (let key in answers) {
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        if (selected && selected.value === answers[key]) {
+          score++;
+        }
+      }
+
+      const resultMsg = score === 3 ? "🎉 Xuất sắc! Bé trả lời đúng hết!" :
+                       score === 2 ? "👍 Tốt lắm! Cố gắng thêm!" :
+                       "😅 Bé cần luyện tập thêm nhé!";
+      
+      document.getElementById("resultSection").innerHTML = `<p>${resultMsg}</p><p>Bé đúng ${score}/3 câu</p>`;
+    }
+  </script>
+</body>
+</html>
