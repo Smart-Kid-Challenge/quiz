@@ -110,11 +110,6 @@ button:hover {
     width: 80px;
 }
 
-.inline-dialogue {
-  white-space: pre;
-  margin-left: -68px;
-}
-
 
 .user-info {
   text-align: right;
@@ -123,3 +118,4 @@ button:hover {
   color: #4b0082;
   margin-bottom: 10px;
 }
+
