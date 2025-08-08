@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tech Tigers Mock Test</title>
+  <title>Bài Thi Thử - Tech Tigers</title>
   <link rel="stylesheet" href="css/all.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
     <!-- LOGO FOCUS LEARNING -->
     <div class="header-centered">
       <img src="image/logolv.jpg" alt="Focus Learning Logo" class="logo-absolute">
-      <h1>📝 Tech Tigers Mock Test</h1>
+      <h1>📝 Bài Thi Thử Tech Tigers</h1>
     </div>
 
     <!-- Bài thi -->
@@ -55,13 +55,10 @@
 
       <div class="question">
         <p>5. A: How do I get to the park? B: _____ Main Street.</p>
-        
         <label><input type="radio" name="q26" value="a"> a. In front of</label>
         <label><input type="radio" name="q26" value="b"> b. Turn left</label>
         <label><input type="radio" name="q26" value="c"> c. Go straight down</label>
       </div>
-
-
 
       <h2>🔧 Part 2: Grammar</h2>
 
@@ -134,132 +131,122 @@
         <input type="text" name="wII10" placeholder="Viết lại câu đúng...">
       </div>
 
-
       <button onclick="submitTest()">✅ Nộp bài</button>
       <div id="result-message" style="margin-top: 20px; font-size: 18px; color: green; text-align: center;"></div>
 
     </div>
   </div>
 
-  <script>
-
-    function startTest() {
-        const name = document.getElementById('studentName').value.trim();
-        const year = document.getElementById('birthYear').value.trim();
-        const phone = document.getElementById('parentPhone').value.trim();
-
-        if (!name || !year || !phone) {
-        alert("Vui lòng nhập đầy đủ thông tin.");
-        return;
-        }
-
-        // Lưu trạng thái nếu muốn
-        localStorage.setItem('hasStartedTest', 'true');
-
-        // Chuyển trang sang quizkid.html
-        window.location.href = "quizkid.html";
+<script>
+  // Gán tên học sinh vào giao diện khi tải trang
+  window.addEventListener("DOMContentLoaded", () => {
+    const studentName = localStorage.getItem('studentName');
+    if (studentName) {
+      document.getElementById("student-name").textContent = studentName;
     }
+  });
 
-    function submitTest() {
-      const radioQuestions = ["q3", "q4", "q13", "q20", "q26", "q5", "q11", "q14", "q22", "q24"];
-      const textInputs = ["wI2_1", "wI2_2", "wI4_1", "wI4_2", "wII6", "wII7", "wII10"];
+  function submitTest() {
+    const radioQuestions = ["q3", "q4", "q13", "q20", "q26", "q5", "q11", "q14", "q22", "q24"];
+    const textInputs = ["wI2_1", "wI2_2", "wI4_1", "wI4_2", "wII6", "wII7", "wII10"];
 
-      let allAnswered = true;
-
-      // 1. Kiểm tra câu trắc nghiệm đã chọn chưa
-      for (let name of radioQuestions) {
-        const checked = document.querySelector(`input[name="${name}"]:checked`);
-        if (!checked) {
-          allAnswered = false;
-          break;
+    // 1. Kiểm tra hoàn thành
+    for (let name of radioQuestions) {
+        if (!document.querySelector(`input[name="${name}"]:checked`)) {
+            alert("⚠️ Vui lòng hoàn thành tất cả các câu trắc nghiệm trước khi nộp bài.");
+            return;
         }
-      }
-
-      // 2. Kiểm tra câu tự luận đã điền chưa
-      for (let name of textInputs) {
+    }
+    for (let name of textInputs) {
         const input = document.querySelector(`input[name="${name}"]`);
         if (!input || input.value.trim() === "") {
-          allAnswered = false;
-          break;
+            alert("⚠️ Vui lòng hoàn thành tất cả các câu tự luận trước khi nộp bài.");
+            return;
         }
-      }
+    }
 
-      // 3. Nếu còn thiếu, cảnh báo
-      if (!allAnswered) {
-        alert("⚠️ Vui lòng hoàn thành tất cả các câu hỏi trước khi nộp bài.");
-        return;
-      }
+    // 2. Đáp án trắc nghiệm
+    const answerKey = {
+        q3: "c", q4: "a", q13: "c", q20: "c", q26: "c",
+        q5: "c", q11: "b", q14: "a", q22: "c", q24: "a"
+    };
 
-      // 4. Đáp án đúng
-      const answerKey = {
-        q3: "c",
-        q4: "a",
-        q13: "c",
-        q20: "c",
-        q26: "c",
-        q5: "c",
-        q11: "b",
-        q14: "a",
-        q22: "c",
-        q24: "a"
-      };
-      
-      const writingAnswers = {
-        wI2_1: ["played"],                  // động từ (3)
-        wI2_2: ["were"],                    // động từ (4)
-        wI4_1: ["doesn't", "does not"],     // động từ (7)
-        wI4_2: ["will be"],                 // động từ (8)
-        wII6: ["Did you use to have a desktop computer", "Did you use to have a desktop computer?", "Did you use to have a desktop computer ?"],
-        wII7: ["I have studied English for three years"],
-        wII10: ["Do you like listening to music", "Do you like listening to music?", "Do you like listening to music ?"]
-      };
+    // 3. Đáp án viết
+    const writingAnswers = {
+        wI2_1: ["played"],
+        wI2_2: ["were"],
+        wI4_1: ["doesn't", "does not"],
+        wI4_2: ["will be"],
+        wII6: ["did you use to have a desktop computer", "did you use to have a desktop computer?"],
+        wII7: ["i have studied english for three years"],
+        wII10: ["do you like listening to music", "do you like listening to music?"]
+    };
 
-
-
-      // 5. Tính điểm
-      let correct = 0;
-      let total = radioQuestions.length;
-
-      for (const name of radioQuestions) {
+    // 4. Tính điểm trắc nghiệm
+    let correctTracNghiem = 0;
+    for (const name of radioQuestions) {
         const selected = document.querySelector(`input[name="${name}"]:checked`);
-        if (selected && selected.value === answerKey[name]) {
-          correct++;
-        }
-      }
-      
-      // 6. Chấm điểm phần viết
-      let writingCorrect = 0;
-      let writingTotal = Object.keys(writingAnswers).length;
+        if (selected && selected.value === answerKey[name]) correctTracNghiem++;
+    }
 
-      for (const key in writingAnswers) {
+    // 5. Tính điểm phần viết
+    let correctViet = 0;
+    for (const key in writingAnswers) {
         const input = document.querySelector(`input[name="${key}"]`);
         const userAnswer = input.value.trim().toLowerCase();
+        const valids = writingAnswers[key].map(a => a.toLowerCase());
+        if (valids.includes(userAnswer)) correctViet++;
+    }
 
-        const validAnswers = writingAnswers[key].map(ans => ans.toLowerCase());
-        if (validAnswers.includes(userAnswer)) {
-          writingCorrect++;
+    const totalScoreNumeric = correctTracNghiem + correctViet;
+    const totalQuestions = radioQuestions.length + Object.keys(writingAnswers).length;
+    const scoreText = `${totalScoreNumeric}/${totalQuestions}`;
+
+    // 6. Lấy thông tin học sinh
+    const studentName = localStorage.getItem("studentName") || "Không rõ";
+    const birthYear = localStorage.getItem("birthYear") || "Không rõ";
+    const parentPhone = localStorage.getItem("parentPhone") || "Không rõ";
+    const startTime = localStorage.getItem("testStartTime") || ""; // thời gian bắt đầu
+
+    // 7. Gửi dữ liệu
+    fetch('save_result.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            name: studentName,
+            birthYear: birthYear,
+            parentPhone: parentPhone,
+            score_text: scoreText,
+            score_tracnghiem: correctTracNghiem,
+            score_viet: correctViet,
+            start_time: startTime
+        })
+    })
+    .then(async res => {
+        const text = await res.text();
+        try {
+            const data = JSON.parse(text);
+            if (data && data.message) {
+                localStorage.setItem("finalScoreText", scoreText);
+                localStorage.setItem("finalScoreNumeric", totalScoreNumeric.toString());
+                localStorage.setItem("totalQuestions", totalQuestions.toString());
+                window.location.href = "result.html";
+            } else {
+                alert("⚠️ Có lỗi khi lưu kết quả. Vui lòng thử lại.");
+                console.error("Unexpected response:", text);
+            }
+        } catch (e) {
+            console.error("Invalid JSON response:", text);
+            alert("⚠️ Có lỗi khi nhận phản hồi từ server.");
         }
-      }
+    })
+    .catch(err => {
+        console.error("Fetch error:", err);
+        alert("⚠️ Không thể kết nối tới server. Vui lòng thử lại sau.");
+    });
+}
 
-
-      // 7. Hiển thị kết quả
-      document.getElementById("result-message").innerHTML =
-      `🎯 Trắc nghiệm: <strong>${correct}/${total}</strong> câu đúng<br>` +
-      `✍️ Viết: <strong>${writingCorrect}/${writingTotal}</strong> câu đúng`;
-
-      }
-
-      // Lấy tên học sinh từ localStorage
-      window.addEventListener("DOMContentLoaded", () => {
-        const studentName = localStorage.getItem('studentName');
-        if (studentName) {
-          document.getElementById("student-name").textContent = studentName;
-        }
-      });
-
-  </script>
+</script>
 
 </body>
 </html>
-
-

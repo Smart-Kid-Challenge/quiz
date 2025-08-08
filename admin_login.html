@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập Admin - Tech Tigers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/all.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="header-centered">
+      <img src="image/logolv.jpg" alt="Logo" class="logo-absolute">
+      <h1>🔒 Đăng nhập Admin</h1>
+    </div>
+
+    <div class="form-section">
+      <form id="adminLoginForm" onsubmit="adminLogin(event)">
+        <label>Tài khoản:
+          <input type="text" id="adminUsername" placeholder="Nhập tài khoản" required>
+        </label><br><br>
+
+        <label>Mật khẩu:
+          <input type="password" id="adminPassword" placeholder="Nhập mật khẩu" required>
+        </label><br><br>
+
+        <div class="button-group">
+            <button type="button" class="back-button" onclick="goBack()">🔙 Quay lại</button>
+            <button type="submit" class="login-button">🔐 Đăng nhập</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    function adminLogin(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('adminUsername').value.trim();
+      const password = document.getElementById('adminPassword').value;
+
+      // Thay thế bằng thông tin thực tế hoặc gửi về server để kiểm tra
+      const validUsername = "admin";
+      const validPassword = "123";  // bạn nên thay đổi mật khẩu này!
+
+      if (username === validUsername && password === validPassword) {
+        // Đánh dấu đã đăng nhập
+        localStorage.setItem("isAdmin", "true");
+
+        // Chuyển hướng sang trang admin
+        window.location.href = "admin_dashboard.html";
+      } else {
+        alert("❌ Sai tài khoản hoặc mật khẩu!");
+      }
+    }
+
+    function goBack() {
+        window.location.href = "login.html"; // hoặc thay bằng trang bạn muốn quay lại
+    }
+
+  </script>
+
+</body>
+</html>

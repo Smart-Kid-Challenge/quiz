@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kết quả - Tech Tigers</title>
+  <link rel="stylesheet" href="css/all.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header-centered">
+      <img src="image/logolv.jpg" alt="Focus Learning Logo" class="logo-absolute">
+      <h1>📊 Kết quả bài thi</h1>
+    </div>
+
+    <div id="result-box" style="text-align:center; margin-top:30px;">
+      <p id="student-info"></p>
+      <p style="font-size: 24px; font-weight: bold;">Điểm: <span id="score-text"></span></p>
+      <p>Số câu đúng: <span id="score-numeric"></span> / <span id="total-questions"></span></p>
+      <p id="note" style="color: gray;"></p>
+
+      <div style="margin-top: 20px;">
+        <button type="button" class="back-button" onclick="goBack()">🔙 Quay lại</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const name = localStorage.getItem("studentName") || "Không rõ";
+    const birthYear = localStorage.getItem("birthYear") || "Không rõ";
+    const phone = localStorage.getItem("parentPhone") || "Không rõ";
+    const scoreText = localStorage.getItem("finalScoreText") || "Chưa có";
+    const scoreNumeric = localStorage.getItem("finalScoreNumeric") || "0";
+    const totalQuestions = localStorage.getItem("totalQuestions") || "?";
+
+    document.getElementById('student-info').textContent = `${name} — Sinh năm: ${birthYear} — SĐT Phụ huynh: ${phone}`;
+    document.getElementById('score-text').textContent = scoreText;
+    document.getElementById('score-numeric').textContent = scoreNumeric;
+    document.getElementById('total-questions').textContent = totalQuestions;
+
+    // Nếu file kết quả chưa sẵn sàng, thông báo (tùy host, link có thể trả 404 nếu file chưa tồn tại)
+    fetch('admin_data/results.xlsx', { method: 'HEAD' })
+      .then(res => {
+        if (!res.ok) {
+          document.getElementById('note').textContent = 'File kết quả chưa sẵn sàng để tải (chờ lưu trên server).';
+          document.getElementById('download-link').style.display = 'none';
+        }
+      })
+      .catch(() => {
+        document.getElementById('note').textContent = 'Không thể kiểm tra file trên server. Vui lòng liên hệ admin.';
+        document.getElementById('download-link').style.display = 'none';
+      });
+  });
+
+  function goBack() {
+        window.location.href = "login.html"; // hoặc thay bằng trang bạn muốn quay lại
+    }
+</script>
+</body>
+</html>

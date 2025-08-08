@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/all.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="header-centered">
+      <img src="image/logolv.jpg" alt="Logo" class="logo-absolute">
+      <h1>📊 Kết quả bài thi</h1>
+    </div>
+
+    <div id="admin-content">
+      <p>📥 <a href="admin_data/results.xlsx" download>Xem hoặc tải kết quả (Excel)</a></p>
+      <button onclick="logout()">🚪 Đăng xuất</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Kiểm tra quyền admin
+    if (localStorage.getItem("isAdmin") !== "true") {
+      alert("⚠️ Bạn cần đăng nhập để truy cập.");
+      window.location.href = "admin_login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("isAdmin");
+      window.location.href = "admin_login.html";
+    }
+  </script>
+
+</body>
+</html>
