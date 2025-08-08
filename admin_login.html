@@ -41,15 +41,15 @@
       const username = document.getElementById('adminUsername').value.trim();
       const password = document.getElementById('adminPassword').value;
 
-      // Thay thế bằng thông tin thực tế hoặc gửi về server để kiểm tra
+      // ✅ Thông tin đăng nhập (có thể sửa nếu muốn)
       const validUsername = "admin";
-      const validPassword = "123";  // bạn nên thay đổi mật khẩu này!
+      const validPassword = "123";  // Nên đổi mật khẩu thực tế
 
       if (username === validUsername && password === validPassword) {
-        // Đánh dấu đã đăng nhập
+        // ✅ Lưu trạng thái đăng nhập
         localStorage.setItem("isAdmin", "true");
 
-        // Chuyển hướng sang trang admin
+        // ✅ Chuyển sang trang admin quản lý điểm
         window.location.href = "admin_dashboard.html";
       } else {
         alert("❌ Sai tài khoản hoặc mật khẩu!");
@@ -57,9 +57,8 @@
     }
 
     function goBack() {
-        window.location.href = "login.html"; // hoặc thay bằng trang bạn muốn quay lại
+        window.location.href = "login.html"; // Hoặc thay bằng trang bạn muốn quay lại
     }
-
   </script>
 
 </body>
