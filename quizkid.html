@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bài Thi Thử - Tech Tigers</title>
+  <title>Tech Tigers Mock Test</title>
   <link rel="stylesheet" href="css/all.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
     <!-- LOGO FOCUS LEARNING -->
     <div class="header-centered">
       <img src="image/logolv.jpg" alt="Focus Learning Logo" class="logo-absolute">
-      <h1>📝 Bài Thi Thử Tech Tigers</h1>
+      <h1>📝 Tech Tigers Mock Test</h1>
     </div>
 
     <!-- Bài thi -->
@@ -134,9 +134,16 @@
       <button onclick="submitTest()">✅ Nộp bài</button>
       <div id="result-message" style="margin-top: 20px; font-size: 18px; color: green; text-align: center;"></div>
 
+      <div id="loading" style="display:none; text-align:center; margin-top:15px; color:blue; font-weight:bold;">
+        ⏳ Đang xử lý bài làm của bạn...
+      </div>
+
+
     </div>
   </div>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
   // Gán tên học sinh vào giao diện khi tải trang
   window.addEventListener("DOMContentLoaded", () => {
@@ -164,6 +171,10 @@
             return;
         }
     }
+
+    // 🔄 Hiện loading, vô hiệu hóa nút
+    document.querySelector("button").disabled = true;
+    document.getElementById("loading").style.display = "block";
 
     // 2. Đáp án trắc nghiệm
     const answerKey = {
@@ -206,45 +217,42 @@
     const studentName = localStorage.getItem("studentName") || "Không rõ";
     const birthYear = localStorage.getItem("birthYear") || "Không rõ";
     const parentPhone = localStorage.getItem("parentPhone") || "Không rõ";
-    const startTime = localStorage.getItem("testStartTime") || ""; // thời gian bắt đầu
+    const submitTime = new Date().toLocaleString();
 
-    // 7. Gửi dữ liệu
-    fetch('save_result.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            name: studentName,
-            birthYear: birthYear,
-            parentPhone: parentPhone,
-            score_text: scoreText,
-            score_tracnghiem: correctTracNghiem,
-            score_viet: correctViet,
-            start_time: startTime
-        })
+    // 7. Gửi dữ liệu bằng FormData
+    const formData = new FormData();
+    formData.append("name", studentName);
+    formData.append("birthYear", birthYear);
+    formData.append("parentPhone", parentPhone);
+    formData.append("score_text", scoreText);
+    formData.append("score_tracnghiem", correctTracNghiem);
+    formData.append("score_viet", correctViet);
+
+    fetch("https://script.google.com/macros/s/AKfycbxOWFlyaT6xZH9f28quUTX-wxhWskAzqYJV8Qyv7B9N95D6ZMdcPYCI04S1h3YdF1yq/exec", {
+        method: "POST",
+        body: formData
     })
-    .then(async res => {
-        const text = await res.text();
-        try {
-            const data = JSON.parse(text);
-            if (data && data.message) {
-                localStorage.setItem("finalScoreText", scoreText);
-                localStorage.setItem("finalScoreNumeric", totalScoreNumeric.toString());
-                localStorage.setItem("totalQuestions", totalQuestions.toString());
-                window.location.href = "result.html";
-            } else {
-                alert("⚠️ Có lỗi khi lưu kết quả. Vui lòng thử lại.");
-                console.error("Unexpected response:", text);
-            }
-        } catch (e) {
-            console.error("Invalid JSON response:", text);
-            alert("⚠️ Có lỗi khi nhận phản hồi từ server.");
-        }
+    .then((res) => res.json())
+    .then((data) => {
+        console.log("✅ Dữ liệu đã gửi:", data);
+
+        // Lưu điểm vào localStorage
+        localStorage.setItem("finalScoreText", scoreText);
+        localStorage.setItem("finalScoreNumeric", totalScoreNumeric.toString());
+        localStorage.setItem("totalQuestions", totalQuestions.toString());
+
+        // Chuyển trang khi gửi thành công
+        window.location.href = "result.html";
     })
-    .catch(err => {
-        console.error("Fetch error:", err);
-        alert("⚠️ Không thể kết nối tới server. Vui lòng thử lại sau.");
+    .catch((err) => {
+        console.error("❌ Lỗi gửi dữ liệu:", err);
+        alert("❌ Gửi dữ liệu thất bại. Vui lòng kiểm tra kết nối mạng và thử lại.");
+        // 🔁 Bỏ chặn nút và ẩn loading nếu lỗi
+        document.querySelector("button").disabled = false;
+        document.getElementById("loading").style.display = "none";
     });
 }
+
 
 </script>
 
