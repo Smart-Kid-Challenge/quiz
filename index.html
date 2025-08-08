@@ -14,14 +14,14 @@
     <div class="header-centered">
       <img src="image/logolv.jpg" alt="Focus Learning Logo" class="logo-absolute">
       <h1>📝 Tech Tigers Mock Test</h1>
+      <button type="button" onclick="goToAdmin()">🔐Admin</button>
     </div>
-
 
     <!-- Nhập thông tin học sinh -->
     <div id="info-section" class="form-section">
-    <h2>👧 Nhập thông tin</h2>
+      <h2>👧 Nhập thông tin</h2>
 
-    <form id="infoForm" onsubmit="startTest(event)">
+      <form id="infoForm" onsubmit="startTest(event)">
         <label>Tên bé:
             <input type="text" id="studentName" placeholder="Nhập tên..." required pattern="^[A-Za-zÀ-ỹ\s]{2,}$" title="Tên chỉ được chứa chữ cái và khoảng trắng, tối thiểu 2 ký tự.">
         </label><br><br>
@@ -35,37 +35,38 @@
         </label><br><br>
 
         <button type="submit">🎯 Bắt đầu làm bài</button>
-    </form>
+      </form>
     </div>
 
+  </div>
 
-    
-  <script>
-    localStorage.setItem('studentName', name);
+<script>
+  function startTest(event) {
+    event.preventDefault();
 
-    function startTest(event) {
-        event.preventDefault(); // Ngăn form gửi đi mặc định để xử lý JS
+    const name = document.getElementById('studentName').value.trim();
+    const year = document.getElementById('birthYear').value.trim();
+    const phone = document.getElementById('parentPhone').value.trim();
 
-        const name = document.getElementById('studentName').value.trim();
-        const year = document.getElementById('birthYear').value.trim();
-        const phone = document.getElementById('parentPhone').value.trim();
-
-        // Nếu form hợp lệ, lưu dữ liệu và chuyển trang
-        if (document.getElementById('infoForm').checkValidity()) {
-            localStorage.setItem('hasStartedTest', 'true');
-            localStorage.setItem('studentName', name);
-            window.location.href = "quizkid.html";
-        } else {
-            // Hiển thị thông báo lỗi mặc định của trình duyệt
-            document.getElementById('infoForm').reportValidity();
-        }
+    if (!document.getElementById('infoForm').checkValidity()) {
+      document.getElementById('infoForm').reportValidity();
+      return;
     }
 
+    // Lưu thông tin học sinh vào localStorage trước khi chuyển
+    localStorage.setItem('hasStartedTest', 'true');
+    localStorage.setItem('studentName', name);
+    localStorage.setItem('birthYear', year);
+    localStorage.setItem('parentPhone', phone);
 
+    // Chuyển sang quiz
+    window.location.href = "quizkid.html";
+  }
 
-    </script>
-
+  function goToAdmin() {
+    window.location.href = "admin_login.html";
+  }
+</script>
 
 </body>
 </html>
-
