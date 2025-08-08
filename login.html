@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bài Thi Thử - Tech Tigers</title>
+  <title>Tech Tigers Mock Test</title>
   <link rel="stylesheet" href="css/all.css">
 </head>
 <body>
@@ -13,59 +13,60 @@
     <!-- LOGO FOCUS LEARNING -->
     <div class="header-centered">
       <img src="image/logolv.jpg" alt="Focus Learning Logo" class="logo-absolute">
-      <h1>📝 Bài Thi Thử Tech Tigers</h1>
+      <h1>📝 Tech Tigers Mock Test</h1>
+      <button type="button" onclick="goToAdmin()">🔐Admin</button>
     </div>
-
 
     <!-- Nhập thông tin học sinh -->
     <div id="info-section" class="form-section">
-    <h2>👧 Nhập thông tin</h2>
+      <h2>👧 Nhập thông tin</h2>
 
-    <form id="infoForm">
-        <!-- Tên bé -->
+      <form id="infoForm" onsubmit="startTest(event)">
         <label>Tên bé:
-        <input type="text" id="studentName" placeholder="Nhập tên..." required pattern="^[A-Za-zÀ-ỹ\s]{2,}$" title="Tên chỉ được chứa chữ cái và khoảng trắng, tối thiểu 2 ký tự.">
+            <input type="text" id="studentName" placeholder="Nhập tên..." required pattern="^[A-Za-zÀ-ỹ\s]{2,}$" title="Tên chỉ được chứa chữ cái và khoảng trắng, tối thiểu 2 ký tự.">
         </label><br><br>
 
-        <!-- Năm sinh -->
         <label>Năm sinh:
-        <input type="number" id="birthYear" placeholder="VD: 2015" required min="2010" max="2020" title="Năm sinh từ 2010 đến 2020.">
+            <input type="number" id="birthYear" placeholder="VD: 2015" required min="2010" max="2020" title="Năm sinh từ 2010 đến 2020.">
         </label><br><br>
 
-        <!-- SĐT -->
         <label>SĐT Phụ huynh:
-        <input type="tel" id="parentPhone" placeholder="090xxxxxxx" required pattern="^0\d{9}$" title="SĐT phải bắt đầu bằng 0 và có đúng 10 chữ số.">
+            <input type="tel" id="parentPhone" placeholder="090xxxxxxx" required pattern="^0\d{9}$" title="SĐT phải bắt đầu bằng 0 và có đúng 10 chữ số.">
         </label><br><br>
 
-        <button type="button" onclick="startTest()">🎯 Bắt đầu làm bài</button>
-    </form>
+        <button type="submit">🎯 Bắt đầu làm bài</button>
+      </form>
     </div>
 
+  </div>
 
-    
-  <script>
-    localStorage.setItem('studentName', name);
+<script>
+  function startTest(event) {
+    event.preventDefault();
 
-    function startTest() {
-        const name = document.getElementById('studentName').value.trim();
-        const year = document.getElementById('birthYear').value.trim();
-        const phone = document.getElementById('parentPhone').value.trim();
+    const name = document.getElementById('studentName').value.trim();
+    const year = document.getElementById('birthYear').value.trim();
+    const phone = document.getElementById('parentPhone').value.trim();
 
-        if (!name || !year || !phone) {
-            alert("Vui lòng nhập đầy đủ thông tin.");
-            return;
-        }
-
-        // Lưu tên và trạng thái
-        localStorage.setItem('hasStartedTest', 'true');
-        localStorage.setItem('studentName', name);
-
-        window.location.href = "quizkid.html";
+    if (!document.getElementById('infoForm').checkValidity()) {
+      document.getElementById('infoForm').reportValidity();
+      return;
     }
 
+    // Lưu thông tin học sinh vào localStorage trước khi chuyển
+    localStorage.setItem('hasStartedTest', 'true');
+    localStorage.setItem('studentName', name);
+    localStorage.setItem('birthYear', year);
+    localStorage.setItem('parentPhone', phone);
 
-    </script>
+    // Chuyển sang quiz
+    window.location.href = "quizkid.html";
+  }
 
+  function goToAdmin() {
+    window.location.href = "admin_login.html";
+  }
+</script>
 
 </body>
 </html>
