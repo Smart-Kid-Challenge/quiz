@@ -1,5 +1,5 @@
 body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: 'Quicksand', 'Segoe UI', sans-serif;
     background: linear-gradient(to bottom right, #d9cfff, #ffffff);
     color: #4b0082;
     padding: 20px;
@@ -183,3 +183,4 @@ button:hover {
 .login-button:hover {
   background-color: #864fd8;
 }
+
