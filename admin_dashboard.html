@@ -25,64 +25,81 @@
   </div>
 
   <script>
-  // BƯỚC 1: Kiểm tra quyền admin
-  if (localStorage.getItem("isAdmin") !== "true") {
-    alert("⚠️ Bạn cần đăng nhập để truy cập.");
-    window.location.href = "admin_login.html";
-  }
+    // BƯỚC 1: Kiểm tra quyền admin
+    if (localStorage.getItem("isAdmin") !== "true") {
+      alert("⚠️ Bạn cần đăng nhập để truy cập.");
+      window.location.href = "admin_login.html";
+    }
 
-  // BƯỚC 2: Hàm đăng xuất
-  function logout() {
-    localStorage.removeItem("isAdmin");
-    window.location.href = "admin_login.html";
-  }
+    // BƯỚC 2: Hàm đăng xuất
+    function logout() {
+      localStorage.removeItem("isAdmin");
+      window.location.href = "admin_login.html";
+    }
 
-  // BƯỚC 3: URL Apps Script để lấy dữ liệu từ Google Sheets
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxOWFlyaT6xZH9f28quUTX-wxhWskAzqYJV8Qyv7B9N95D6ZMdcPYCI04S1h3YdF1yq/exec";
+    // BƯỚC 3: URL Apps Script để lấy dữ liệu từ Google Sheets
+    const scriptURL = "https://script.google.com/macros/s/AKfycbw_O2bO1bzlk-1s_lpkkrFJARWAra0n6gCBodRMMlVQM9Ve1I4aQZEGCS18vZsltdtO/exec";
 
+    // Hiện thông báo loading
+    document.getElementById("loading-message").style.display = "block";
+    document.getElementById("results-table").innerHTML = "";
 
-  // Hiện thông báo loading
-  document.getElementById("loading-message").style.display = "block";
-  document.getElementById("results-table").innerHTML = "";
-  // BƯỚC 4: Gọi API và hiển thị dữ liệu
-  fetch(scriptURL)
-    .then(response => response.json())
-    .then(data => {
-      if (!data || data.length === 0) {
-        document.getElementById("loading-message").style.display = "none";
-        document.getElementById("results-table").innerHTML = "<p>❌ Không có dữ liệu.</p>";
-        return;
-      }
+    // BƯỚC 4: Gọi API và hiển thị dữ liệu
+    fetch(scriptURL)
+      .then(response => response.json())
+      .then(data => {
+        if (!data || data.length === 0) {
+          document.getElementById("loading-message").style.display = "none";
+          document.getElementById("results-table").innerHTML = "<p>❌ Không có dữ liệu.</p>";
+          return;
+        }
 
-      let table = '<table border="1" cellspacing="0" cellpadding="8">';
-      table += '<tr><th>Họ tên</th><th>Năm sinh</th><th>SĐT phụ huynh</th><th>Kết quả</th><th>Trắc nghiệm</th><th>Viết</th><th>Ngày</th></tr>';
+        let table = '<table border="1" cellspacing="0" cellpadding="8">';
+        table += `
+          <tr>
+            <th>Họ tên</th>
+            <th>Năm sinh</th>
+            <th>SĐT phụ huynh</th>
+            <th>Kết quả</th>
+            <th>Vocab</th>
+            <th>Grammar</th>
+            <th>Writing</th>
+            <th>Ngày</th>
+            <th>Note</th>
+          </tr>
+        `;
 
-      data.forEach(row => {
+        data.forEach(row => {
         table += `
           <tr>
             <td>${row["Họ tên"] || ""}</td>
             <td>${row["Năm sinh"] || ""}</td>
             <td>${row["SĐT phụ huynh"] ? row["SĐT phụ huynh"].toString().padStart(10, "0") : ""}</td>
             <td>${row["Kết quả"] || ""}</td>
-            <td>${row["Trắc nghiệm"] || ""}</td>
-            <td>${row["Viết"] || ""}</td>
+            <td>${row["Vocab"] !== undefined && row["Vocab"] !== "" ? row["Vocab"] : "0"}</td>
+            <td>${row["Grammar"] !== undefined && row["Grammar"] !== "" ? row["Grammar"] : "0"}</td>
+            <td>${row["Writing"] !== undefined && row["Writing"] !== "" ? row["Writing"] : "0"}</td>
             <td>${formatDate(row["Ngày"])}</td>
-          </tr>`;
+            <td>${(row["Note"] || "").split('"').map(s => s.trim()).filter(s => s.length).join('<br><br>')}</td>
+
+          </tr>
+        `;
       });
 
-      table += '</table>';
-      document.getElementById("results-table").innerHTML = table;
 
-      // Ẩn thông báo loading sau khi hoàn tất
-      document.getElementById("loading-message").style.display = "none";
-    })
-    .catch(err => {
-      document.getElementById("loading-message").style.display = "none";
-      console.error("❌ Lỗi khi tải dữ liệu:", err);
-      document.getElementById("results-table").innerHTML = "<p>❌ Lỗi khi tải dữ liệu.</p>";
-    });
+        table += '</table>';
+        document.getElementById("results-table").innerHTML = table;
 
+        // Ẩn thông báo loading sau khi hoàn tất
+        document.getElementById("loading-message").style.display = "none";
+      })
+      .catch(err => {
+        document.getElementById("loading-message").style.display = "none";
+        console.error("❌ Lỗi khi tải dữ liệu:", err);
+        document.getElementById("results-table").innerHTML = "<p>❌ Lỗi khi tải dữ liệu.</p>";
+      });
 
+    // Hàm định dạng ngày giờ
     function formatDate(dateStr) {
       if (!dateStr) return "";
 
@@ -95,12 +112,11 @@
         minute: '2-digit',
         second: '2-digit',
         hour12: false,
-        timeZone: 'Asia/Ho_Chi_Minh' // Giờ Việt Nam
+        timeZone: 'Asia/Ho_Chi_Minh'
       };
 
       return new Intl.DateTimeFormat('vi-VN', options).format(date);
     }
-
   </script>
 
 </body>
