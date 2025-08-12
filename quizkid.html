@@ -154,11 +154,12 @@
   });
 
   function submitTest() {
-    const radioQuestions = ["q3", "q4", "q13", "q20", "q26", "q5", "q11", "q14", "q22", "q24"];
+    const vocabQuestions = ["q3", "q4", "q13", "q20", "q26"];
+    const grammarQuestions = ["q5", "q11", "q14", "q22", "q24"];
     const textInputs = ["wI2_1", "wI2_2", "wI4_1", "wI4_2", "wII6", "wII7", "wII10"];
 
-    // 1. Kiểm tra hoàn thành
-    for (let name of radioQuestions) {
+    // Kiểm tra hoàn thành
+    for (let name of [...vocabQuestions, ...grammarQuestions]) {
         if (!document.querySelector(`input[name="${name}"]:checked`)) {
             alert("⚠️ Vui lòng hoàn thành tất cả các câu trắc nghiệm trước khi nộp bài.");
             return;
@@ -172,17 +173,14 @@
         }
     }
 
-    // 🔄 Hiện loading, vô hiệu hóa nút
     document.querySelector("button").disabled = true;
     document.getElementById("loading").style.display = "block";
 
-    // 2. Đáp án trắc nghiệm
     const answerKey = {
         q3: "c", q4: "a", q13: "c", q20: "c", q26: "c",
         q5: "c", q11: "b", q14: "a", q22: "c", q24: "a"
     };
 
-    // 3. Đáp án viết
     const writingAnswers = {
         wI2_1: ["played"],
         wI2_2: ["were"],
@@ -193,61 +191,98 @@
         wII10: ["do you like listening to music", "do you like listening to music?"]
     };
 
-    // 4. Tính điểm trắc nghiệm
-    let correctTracNghiem = 0;
-    for (const name of radioQuestions) {
+    // Điểm Vocab
+    let correctVocab = 0;
+    for (const name of vocabQuestions) {
         const selected = document.querySelector(`input[name="${name}"]:checked`);
-        if (selected && selected.value === answerKey[name]) correctTracNghiem++;
+        if (selected && selected.value === answerKey[name]) correctVocab++;
     }
 
-    // 5. Tính điểm phần viết
-    let correctViet = 0;
+    // Điểm Grammar
+    let correctGrammar = 0;
+    for (const name of grammarQuestions) {
+        const selected = document.querySelector(`input[name="${name}"]:checked`);
+        if (selected && selected.value === answerKey[name]) correctGrammar++;
+    }
+
+    // Điểm Writing
+    let correctWriting = 0;
     for (const key in writingAnswers) {
         const input = document.querySelector(`input[name="${key}"]`);
         const userAnswer = input.value.trim().toLowerCase();
         const valids = writingAnswers[key].map(a => a.toLowerCase());
-        if (valids.includes(userAnswer)) correctViet++;
+        if (valids.includes(userAnswer)) correctWriting++;
     }
 
-    const totalScoreNumeric = correctTracNghiem + correctViet;
-    const totalQuestions = radioQuestions.length + Object.keys(writingAnswers).length;
+    // Nhận xét
+    const vocabComments = {
+        5: "Tuyệt vời! Con đã nắm chắc vốn từ vựng trong chủ đề này. Hãy tiếp tục duy trì nhé!",
+        4: "Rất tốt! Con chỉ sai 1 câu, hãy luyện tập mỗi ngày để nhớ lâu hơn.",
+        3: "Khá ổn, nhưng con cần ôn thêm từ vựng. Đừng quên luyện tập mỗi ngày!",
+        2: "Con cần luyện tập nhiều hơn. Hãy đọc lại và làm thêm bài tập nhé.",
+        1: "Con đang gặp khó khăn với từ vựng trong chủ đề này. Hãy bắt đầu ôn lại từ cơ bản.",
+        0: "Không sao đâu! Con cần học lại từ vựng thường xuyên để cải thiện nhé."
+    };
+    const grammarComments = {
+        5: "Xuất sắc! Con đã hiểu và áp dụng đúng ngữ pháp.",
+        4: "Rất tốt! Chỉ một lỗi nhỏ, hãy luyện tập để cải thiện hơn nhé",
+        3: "Khá ổn, nhưng con cần luyện thêm cấu trúc câu và cách chia thì.",
+        2: "Con cần ôn lại các quy tắc ngữ pháp chính con nhé, cố lên.",
+        1: "Con cần bổ sung các kiến thức ngữ pháp cơ bản con nhé",
+        0: "Không sao! Hãy học lại từ đầu phần ngữ pháp này và luyện tập thường xuyên."
+    };
+    const writingComments = {
+        7: "Rất tốt! Con viết rõ ràng, đúng cấu trúc và không mắc lỗi chính tả.",
+        6: "Rất tốt! Con viết rõ ràng, đúng cấu trúc và không mắc lỗi chính tả.",
+        5: "Rất tốt! Con viết rõ ràng, đúng cấu trúc và không mắc lỗi chính tả.",
+        4: "Tốt! Con cần chú ý hơn đến dấu câu hoặc cách diễn đạt để bài viết hay hơn.",
+        3: "Bài viết ổn nhưng cần luyện cách dùng từ và sắp xếp ý.",
+        2: "Con cần luyện viết câu đầy đủ ý và đúng ngữ pháp hơn.",
+        1: "Con gặp khó khăn khi diễn đạt ý, hãy bắt đầu luyện viết câu ngắn và đơn giản.",
+        0: "Không sao! Hãy học lại cách viết câu cơ bản và luyện từng bước."
+    };
+
+    // Tổng điểm
+    const totalScoreNumeric = correctVocab + correctGrammar + correctWriting;
+    const totalQuestions = vocabQuestions.length + grammarQuestions.length + Object.keys(writingAnswers).length;
     const scoreText = `${totalScoreNumeric}/${totalQuestions}`;
 
-    // 6. Lấy thông tin học sinh
-    const studentName = localStorage.getItem("studentName") || "Không rõ";
-    const birthYear = localStorage.getItem("birthYear") || "Không rõ";
-    const parentPhone = localStorage.getItem("parentPhone") || "Không rõ";
-    const submitTime = new Date().toLocaleString();
+    // Lưu localStorage
+    localStorage.setItem("finalScoreText", scoreText);
+    localStorage.setItem("finalScoreNumeric", totalScoreNumeric.toString());
+    localStorage.setItem("totalQuestions", totalQuestions.toString());
 
-    // 7. Gửi dữ liệu bằng FormData
+    localStorage.setItem("vocabScore", correctVocab);
+    localStorage.setItem("grammarScore", correctGrammar);
+    localStorage.setItem("writingScore", correctWriting);
+
+    localStorage.setItem("vocabComment", vocabComments[correctVocab]);
+    localStorage.setItem("grammarComment", grammarComments[correctGrammar]);
+    localStorage.setItem("writingComment", writingComments[correctWriting]);
+
+    // Gửi dữ liệu lên Google Sheets
     const formData = new FormData();
-    formData.append("name", studentName);
-    formData.append("birthYear", birthYear);
-    formData.append("parentPhone", parentPhone);
-    formData.append("score_text", scoreText);
-    formData.append("score_tracnghiem", correctTracNghiem);
-    formData.append("score_viet", correctViet);
+    formData.append("name", localStorage.getItem("studentName") || "");
+    formData.append("birthYear", localStorage.getItem("birthYear") || "");
+    formData.append("parentPhone", localStorage.getItem("parentPhone") || "");
+    formData.append("score_text", scoreText); // Kết quả
+    formData.append("score_vocab", correctVocab.toString());
+    formData.append("score_grammar", correctGrammar.toString());
+    formData.append("score_writing", correctWriting.toString());
 
-    fetch("https://script.google.com/macros/s/AKfycbxOWFlyaT6xZH9f28quUTX-wxhWskAzqYJV8Qyv7B9N95D6ZMdcPYCI04S1h3YdF1yq/exec", {
+    // Gộp 3 nhận xét thành 1 Note
+    const noteText = `"${vocabComments[correctVocab]}"\n"${grammarComments[correctGrammar]}"\n"${writingComments[correctWriting]}"`;
+    formData.append("note", noteText);
+
+    fetch("https://script.google.com/macros/s/AKfycbw_O2bO1bzlk-1s_lpkkrFJARWAra0n6gCBodRMMlVQM9Ve1I4aQZEGCS18vZsltdtO/exec", {
         method: "POST",
         body: formData
     })
-    .then((res) => res.json())
-    .then((data) => {
-        console.log("✅ Dữ liệu đã gửi:", data);
-
-        // Lưu điểm vào localStorage
-        localStorage.setItem("finalScoreText", scoreText);
-        localStorage.setItem("finalScoreNumeric", totalScoreNumeric.toString());
-        localStorage.setItem("totalQuestions", totalQuestions.toString());
-
-        // Chuyển trang khi gửi thành công
-        window.location.href = "result.html";
-    })
-    .catch((err) => {
-        console.error("❌ Lỗi gửi dữ liệu:", err);
-        alert("❌ Gửi dữ liệu thất bại. Vui lòng kiểm tra kết nối mạng và thử lại.");
-        // 🔁 Bỏ chặn nút và ẩn loading nếu lỗi
+    .then(res => res.json())
+    .then(() => window.location.href = "result.html")
+    .catch(err => {
+        alert("❌ Lỗi gửi dữ liệu!");
+        console.error(err);
         document.querySelector("button").disabled = false;
         document.getElementById("loading").style.display = "none";
     });
