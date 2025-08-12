@@ -16,8 +16,12 @@
     <div id="result-box" style="text-align:center; margin-top:30px;">
       <p id="student-info"></p>
       <p style="font-size: 24px; font-weight: bold;">Điểm: <span id="score-text"></span></p>
-      <p>Số câu đúng: <span id="score-numeric"></span> / <span id="total-questions"></span></p>
+      <p><span id="score-numeric"></span> / <span id="total-questions"></span></p>
       <p id="note" style="color: gray;"></p>
+      <p><b>Vocab:</b> <span id="vocab-score"></span></p>
+      <p><b>Grammar:</b> <span id="grammar-score"></span></p>
+      <p><b>Writing:</b> <span id="writing-score"></span></p>
+
 
       <div style="margin-top: 20px;">
         <button type="button" class="back-button" onclick="goBack()">🔙 Quay lại</button>
@@ -38,6 +42,10 @@
     document.getElementById('score-text').textContent = scoreText;
     document.getElementById('score-numeric').textContent = scoreNumeric;
     document.getElementById('total-questions').textContent = totalQuestions;
+
+    document.getElementById('vocab-score').textContent = `${localStorage.getItem("vocabScore")}/5 — ${localStorage.getItem("vocabComment")}`;
+    document.getElementById('grammar-score').textContent = `${localStorage.getItem("grammarScore")}/5 — ${localStorage.getItem("grammarComment")}`;
+    document.getElementById('writing-score').textContent = `${localStorage.getItem("writingScore")}/7 — ${localStorage.getItem("writingComment")}`;
 
     // Nếu file kết quả chưa sẵn sàng, thông báo (tùy host, link có thể trả 404 nếu file chưa tồn tại)
     fetch('admin_data/results.xlsx', { method: 'HEAD' })
